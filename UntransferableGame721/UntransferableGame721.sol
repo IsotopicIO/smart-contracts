@@ -84,6 +84,9 @@ contract UntransferableGameLicense is ERC721Enumerable, Ownable {
     return bytes(currentBaseURI).length > 0 ? string(abi.encodePacked(currentBaseURI, baseExtension)) : "";
   }
 
+  function setCost(uint256 _cost) public onlyOwner {
+    cost = _cost;
+  }
 
   function setBaseURI(string memory _newBaseURI) public onlyOwner { 
     baseURI = _newBaseURI;
