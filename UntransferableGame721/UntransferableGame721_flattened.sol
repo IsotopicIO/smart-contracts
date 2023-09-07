@@ -1912,8 +1912,8 @@ contract UntransferableGameLicense is ERC721Enumerable, Ownable {
     require(supply + _mintAmount <= maxSupply);
 
     if (msg.sender != owner() && msg.sender != publisher) {
-        if(whitelisted[_to] == false) {
-          require(onlyWhiteList==false, "only whitelist addresses can mint");
+        if(onlyWhiteList) {
+          require(whitelisted[_to], "only whitelist addresses can mint");
         }
         if (cost > 0){
           uint256 balanceBefore = token.balanceOf(address(this));
