@@ -1899,8 +1899,17 @@ contract UntransferableGameLicense is ERC721Enumerable, Ownable {
     require(owner() == _msgSender() || publisher == _msgSender(), "Ownable: caller is not the owner or publisher");
   }
 
+  function _checkPublisher() internal view virtual {
+    require(publisher == _msgSender(), "Caller must be the publisher.");
+  }
+
   modifier onlyOwnerOrPublisher() {
     _checkOwnerOrPublisher();
+    _;
+  }
+
+  modifier onlyPublisher(){
+    _checkPublisher();
     _;
   }
 
@@ -1972,27 +1981,27 @@ contract UntransferableGameLicense is ERC721Enumerable, Ownable {
     emit BaseExtensionChanged(oldBaseExtension, _newBaseExtension);
   }
 
-  function pause(bool _state) public onlyOwner {  
+  function pause(bool _state) public onlyOwnerOrPublisher {  
     bool oldPaused = paused;
     paused = _state;
     emit PausedChanged(oldPaused, _state);
   }
 
-  function setOnlyWhitelist(bool _state) public onlyOwner { 
+  function setOnlyWhitelist(bool _state) public onlyOwnerOrPublisher { 
     bool oldOnlyWhiteList = onlyWhiteList;
     onlyWhiteList = _state;
     emit OnlyWhiteListChanged(oldOnlyWhiteList, _state);
   }
  
- function whitelistUser(address _user) public onlyOwner { 
+ function whitelistUser(address _user) public onlyOwnerOrPublisher { 
     whitelisted[_user] = true;
   }
  
-  function removeWhitelistUser(address _user) public onlyOwner {  
+  function removeWhitelistUser(address _user) public onlyOwnerOrPublisher {  
     whitelisted[_user] = false;
   }
 
-  function setPublisher(address _publisher) public onlyOwnerOrPublisher {
+  function setPublisher(address _publisher) public onlyPublisher {
     require(_publisher != address(0), "New address can't be the 0 address.");
     address oldPublisher = publisher;
     publisher = _publisher;
